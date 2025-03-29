@@ -2,36 +2,45 @@ require 'rspec'
 require_relative '../lib/string_calculator'
 
 describe StringCalculator do
+  let(:calculator) { StringCalculator.new }
+
   describe "#add" do
-    it "returns 0 for an empty string" do
-      calculator = StringCalculator.new
-      expect(calculator.add("")).to eq(0)
+    context "when input is empty" do
+      it "returns 0" do
+        expect(calculator.add("")).to eq(0)
+      end
     end
 
-    it "returns the number itself when a single number is provided" do
-    	calculator = StringCalculator.new
-      expect(calculator.add("1")).to eq(1)
+    context "when input contains a single number" do
+      it "returns the number itself" do
+        expect(calculator.add("1")).to eq(1)
+      end
     end
 
-      it "returns sum of two numbers" do
-        calculator = StringCalculator.new
-      expect(calculator.add("1,2")).to eq(3)
+    context "when input contains multiple numbers" do
+      it "returns the sum of two numbers" do
+        expect(calculator.add("1,2")).to eq(3)
+      end
+
+      it "returns the sum of multiple numbers" do
+        expect(calculator.add("1,2,3,4")).to eq(10)
+      end
     end
 
-      it "returns sum of multiple numbers" do
-        calculator = StringCalculator.new
-      expect(calculator.add("1,2,3,4")).to eq(10)
+    context "when using a custom delimiter" do
+      it "supports a different delimiter defined in the input" do
+        expect(calculator.add("//;\n1;2")).to eq(3)
+      end
     end
 
-      it "supports different delimiters" do
-        calculator = StringCalculator.new
-      expect(calculator.add("//;\n1;2")).to eq(3)
-    end
+    context "when input contains negative numbers" do
+      it "raises an error listing the negative numbers" do
+        expect { calculator.add("1,-2,3") }.to raise_error("negative numbers not allowed: -2")
+      end
 
-      it "raises error for negative numbers" do
-       calculator = StringCalculator.new
-      expect { calculator.add("1,-2,3") }.to raise_error("negative numbers not allowed: -2")
+      it "raises an error with multiple negative numbers" do
+        expect { calculator.add("-1,-2,-3") }.to raise_error("negative numbers not allowed: -1, -2, -3")
+      end
     end
-
   end
 end
